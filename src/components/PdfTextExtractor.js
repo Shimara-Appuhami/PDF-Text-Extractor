@@ -1,13 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
-// Worker is auto-resolved by bundler for modern pdfjs-dist when using ESM. Explicit workerSrc helps some setups.
 try {
   if (!GlobalWorkerOptions.workerSrc) {
     GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString();
   }
 } catch (e) {
-  // non-fatal; fallback to default worker resolution
 }
 
 const PdfTextExtractor = () => {
@@ -22,7 +20,7 @@ const PdfTextExtractor = () => {
   const [highlightCounts, setHighlightCounts] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [fileMeta, setFileMeta] = useState(null); // { name, size, pages }
+  const [fileMeta, setFileMeta] = useState(null); 
   const fileInputRef = useRef();
 
   const processFile = async (file) => {
@@ -60,7 +58,7 @@ const PdfTextExtractor = () => {
     processFile(file);
   };
 
-  // Drag & drop
+  // drag & drop
   const dropRef = useRef(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -120,7 +118,6 @@ const PdfTextExtractor = () => {
 
   const keywordArray = keywords.split(',').map(k => k.trim()).filter(Boolean);
 
-  // Load persisted dark preference
   useEffect(() => {
     try {
       const storedDark = localStorage.getItem('pte:dark');
@@ -128,10 +125,8 @@ const PdfTextExtractor = () => {
     } catch (e) { /* ignore */ }
   }, []);
 
-  // Persist
   useEffect(() => { try { localStorage.setItem('pte:dark', String(dark)); } catch(_){} }, [dark]);
 
-  // Respect system preference if no stored preference
   useEffect(() => {
     try {
       const hasStored = localStorage.getItem('pte:dark');
@@ -141,7 +136,6 @@ const PdfTextExtractor = () => {
     } catch(_){}
   }, []);
 
-  // Track viewport for mobile layout
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 780px)');
     const apply = () => setIsMobile(mq.matches);
@@ -150,7 +144,6 @@ const PdfTextExtractor = () => {
     return () => mq.removeEventListener('change', apply);
   }, []);
 
-  // Recompute highlight counts when text or keywords change
   useEffect(() => {
     if (!text || keywordArray.length === 0) { setHighlightCounts({}); return; }
     const lcText = text.toLowerCase();
@@ -257,7 +250,7 @@ const PdfTextExtractor = () => {
           )}
           {error && <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md px-3 py-2" role="alert">{error}</p>}
         </aside>
-        {/* Content area */}
+        {/* content area */}
         <main className="flex-1 flex flex-col gap-4" role="main" onClick={() => { if(isMobile && sidebarOpen) setSidebarOpen(false); }}>
           <h1 className="sr-only">PDF Text Extractor</h1>
           {!text && !loading && (

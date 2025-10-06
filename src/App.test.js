@@ -9,7 +9,7 @@ test('renders PDF Text Extractor heading', () => {
 
 test('renders file input', () => {
   render(<App />);
-  const input = screen.getByLabelText(/highlight keywords/i); // ensure component rendered
+  const input = screen.getByLabelText(/highlight keywords/i);
   expect(input).toBeInTheDocument();
 });
 
